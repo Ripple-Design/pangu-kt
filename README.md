@@ -14,6 +14,8 @@
 
 Kotlin Multiplatform implementation of [pangu.js](https://github.com/vinta/pangu.js).
 
+This repository is the [Ripple-Design](https://github.com/Ripple-Design) fork of [pangu.kt](https://github.com/darkokoa/pangu.kt). The project is still pangu.kt; only the repository name uses a hyphen to follow the organization's naming rules. This fork adds the product-name, credit-rating, and blood-type suffix rules and the Windows drive path rule of pangu.js 10.4.1. Package names and Maven coordinates are unchanged from upstream, so the published artifact still resolves under upstream's coordinates; build this fork from source to use the added rules.
+
 `pangu.kt` inserts spacing between CJK characters and Latin letters, numbers, or symbols.
 
 ## Install
@@ -112,8 +114,8 @@ Deprecated Kotlin/Native targets `macosX64`, `watchosX64`, and `tvosX64` are no 
 - Text inside backticks is not spaced. Quotes may span a line. A straight single quote around only CJK stays tight (`'铁蕾'`). A call parenthesis after a dotted name stays tight (`addEventListener(`).
 - An HTML tag with an ASCII name and a closing `>` is left intact, including the tag name and attributes. Text between tags is spaced. A double-quoted attribute value is spaced (`value="測試123"` becomes `value="測試 123"`). A void tag such as `<br>`, `<hr>`, or `<img>` stays tight against neighboring CJK. A bare non-void tag with no closer (`<div>`, `<String>`, `<Spinner />`) is a mention and takes a space from adjacent CJK. `<` and `>` that are not a tag, including `<!-- -->`, stay brackets.
 - `#` followed by a space or a non-breaking space is not a hashtag. `/#tag` in a slash list stays tight. `C#` still takes a space before following CJK.
-
-Product-name suffix lists (`Disney+`, `公視+`, blood types, credit ratings) are not applied.
+- Product names and tiers with a `+` suffix keep the sign attached at a CJK boundary (`Disney+`, `Apple TV+`, `公視+`, `影劇館+`, `Pro+`). Credit ratings (`AA+`, `BBB-`, `twAA+`) and blood types (`AB+`, `AB-`, `Rh+`) are covered the same way. A closing punctuation mark follows the suffix tight; a word or an opening bracket takes the boundary space.
+- Windows drive paths are spaced as one unit from CJK, for example `檔案在C:\Users\name\` becomes `檔案在 C:\Users\name\`.
 
 ## Notes
 

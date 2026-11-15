@@ -35,7 +35,8 @@ public object Pangu {
     // complement of \s. A lookbehind is a fixed-length run of literals and character classes:
     // no quantifier, group, or alternation. Java 8 and Android ICU reject a lookbehind with no
     // maximum length, and Kotlin/Native only steps a lookbehind by a fixed character count when
-    // the body is that kind of run.
+    // the body is that kind of run. A suffix list such as NAME_SUFFIX has a variable width, so its
+    // guards are matched in code against the suffix end offsets, see nameSuffixEnds().
     // Not in the subset: \d \w \s \b and their complements, \p{} and \P{}, possessive quantifiers,
     // atomic groups, inline flags, named groups, backreferences, \Q\E, class intersection (&&),
     // and \h \v \R (Java's \v is a whitespace class; JS \v is only a vertical tab, and \h \R
@@ -93,6 +94,25 @@ public object Pangu {
         "link", "meta", "param", "source", "track", "wbr",
     )
 
+    // Product names, tiers, credit ratings, and blood types keep their sign attached at a CJK boundary.
+    private const val PRODUCT_NAME =
+        "Apple TV|CATCHPLAY|[Dd]iscovery|Disney|ESPN|Fitness|iCloud|mo ?\\u5E97|Paramount|PS"
+    private const val PRODUCT_NAME_IN_CJK = "\\u516C\\u8996|\\u5F71\\u5287\\u9928"
+    private const val PRODUCT_TIER = "Pro"
+    private const val CREDIT_RATING = "(?:tw)?(?:AA|BBB|BB|CCC)|tw[AB]"
+    private const val MULTI_LETTER_BLOOD_TYPE = "AB|RhD|Rh"
+    private val NAME_SUFFIX = Regex(
+        "(?:(?<![A-Za-z0-9])(?:(?:$PRODUCT_NAME|$PRODUCT_TIER)\\+|(?:$CREDIT_RATING|$MULTI_LETTER_BLOOD_TYPE)[+-])" +
+            "|(?:$PRODUCT_NAME_IN_CJK)\\+)"
+    )
+    // A closing mark follows a name suffix tight; a word or an opening bracket keeps its boundary space.
+    private val CLOSING_AFTER_SUFFIX: Set<Char> = setOf(
+        '/', ')', ']', '}',
+        Char(0xFF09), Char(0x3011), Char(0x3015), Char(0x3009), Char(0x300B),
+        Char(0x300D), Char(0x300F), Char(0xFF0C), Char(0x3002), Char(0x3001),
+        Char(0xFF1B), Char(0xFF1A), Char(0xFF01), Char(0xFF1F),
+    )
+
     // + and | are read per line. < and > are comparison operators. / is not an operator.
     // A bracket counts as the half-width side: CJK-( and ]-CJK are operators. *[ stays a glob.
     private const val OPERATORS = "*=&\\-"
@@ -132,8 +152,10 @@ public object Pangu {
         "/(?:\\.?(?:$FILE_PATH_DIRS)|\\.(?:[A-Za-z0-9_\\-]+))(?:/$FILE_PATH_CHARS)*"
     private const val UNIX_RELATIVE_FILE_PATH =
         "(?:\\./)?(?:$FILE_PATH_DIRS)(?:/$FILE_PATH_CHARS)+"
+    private const val WINDOWS_FILE_PATH = "[A-Z]:\\\\(?:[A-Za-z0-9_\\-. ]+\\\\?)+"
     private val CJK_UNIX_ABSOLUTE_FILE_PATH = Regex("([$CJK_UNICODE])($UNIX_ABSOLUTE_FILE_PATH)")
     private val CJK_UNIX_RELATIVE_FILE_PATH = Regex("([$CJK_UNICODE])($UNIX_RELATIVE_FILE_PATH)")
+    private val CJK_WINDOWS_PATH = Regex("([$CJK_UNICODE])($WINDOWS_FILE_PATH)")
     private val UNIX_ABSOLUTE_FILE_PATH_SLASH_CJK = Regex("($UNIX_ABSOLUTE_FILE_PATH/)([$CJK_UNICODE])")
     private val UNIX_RELATIVE_FILE_PATH_SLASH_CJK = Regex("($UNIX_RELATIVE_FILE_PATH/)([$CJK_UNICODE])")
 
@@ -249,9 +271,13 @@ public object Pangu {
         newText = spacePluses(newText)
         newText = spaceHyphens(newText)
 
+        newText = newText.replace(CJK_OPERATOR_ANS, "$1 $2 $3")
+        val operatorSuffixEnds = nameSuffixEnds(newText)
+        newText = ANS_OPERATOR_CJK.replace(newText) { match ->
+            if (match.range.last in operatorSuffixEnds) match.value
+            else "${match.groupValues[1]} ${match.groupValues[2]} ${match.groupValues[3]}"
+        }
         newText = newText
-            .replace(CJK_OPERATOR_ANS, "$1 $2 $3")
-            .replace(ANS_OPERATOR_CJK, "$1 $2 $3")
             .replace(CJK_LESS_THAN, "$1 $2 $3")
             .replace(LESS_THAN_CJK, "$1 $2 $3")
             .replace(CJK_GREATER_THAN, "$1 $2 $3")
@@ -259,6 +285,7 @@ public object Pangu {
 
             .replace(CJK_UNIX_ABSOLUTE_FILE_PATH, "$1 $2")
             .replace(CJK_UNIX_RELATIVE_FILE_PATH, "$1 $2")
+            .replace(CJK_WINDOWS_PATH, "$1 $2")
             .replace(UNIX_ABSOLUTE_FILE_PATH_SLASH_CJK, "$1 $2")
             .replace(UNIX_RELATIVE_FILE_PATH_SLASH_CJK, "$1 $2")
 
@@ -275,9 +302,13 @@ public object Pangu {
             .replace(AN_LEFT_BRACKET, "$1 $2")
             .replace(RIGHT_BRACKET_AN, "$1 $2")
 
-            .replace(CJK_ANS, "$1 $2")
+        val cjkAnsSuffixEnds = nameSuffixEnds(newText)
+        newText = CJK_ANS.replace(newText) { match ->
+            if (match.range.last + 1 in cjkAnsSuffixEnds) match.value
+            else "${match.groupValues[1]} ${match.groupValues[2]}"
+        }
+        newText = newText
             .replace(ANS_CJK, "$1 $2")
-
             .replace(S_A, "$1 $2")
             .replace(COPYRIGHT_DIGIT, "$1 $2")
 
@@ -319,7 +350,16 @@ public object Pangu {
     private fun spacePluses(text: String): String {
         return mapLines(text) { line ->
             val spaced = if (PLUS_CJK_CONTACT.containsMatchIn(line)) {
-                line.replace(PLUS_SEPARATOR, " + ")
+                val suffixEnds = nameSuffixEnds(line)
+                PLUS_SEPARATOR.replace(line) { match ->
+                    val offset = match.range.first
+                    if (offset + 1 in suffixEnds) {
+                        val next = line.getOrNull(offset + 1)
+                        if (next != null && next in CLOSING_AFTER_SUFFIX) "+" else "+ "
+                    } else {
+                        " + "
+                    }
+                }
             } else {
                 line
             }
@@ -350,6 +390,17 @@ public object Pangu {
     private fun mapLines(text: String, transform: (String) -> String): String {
         if (!text.contains('\n')) return transform(text)
         return text.split('\n').joinToString("\n", transform = transform)
+    }
+
+    // The upstream guards are negative lookbehinds over this variable-width suffix list, which Java 8,
+    // Android ICU, and Kotlin/Native reject. Match the list once and compare offsets instead: a guard
+    // fires when the suffix ends exactly at the position the lookbehind would check.
+    private fun nameSuffixEnds(text: String): HashSet<Int> {
+        val ends = HashSet<Int>()
+        for (match in NAME_SUFFIX.findAll(text)) {
+            ends.add(match.range.last + 1)
+        }
+        return ends
     }
 
     private fun fixBracketSpacing(text: String): String {

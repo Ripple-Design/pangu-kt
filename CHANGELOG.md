@@ -32,6 +32,13 @@ Breaking plain-text spacing changes since 0.2.0. `spacingText` now follows pangu
 - `<` and `>` that are not a tag stay brackets, so `前面<中文123漢字>後面` is still `前面 <中文 123 漢字> 後面` and an HTML comment keeps its brackets.
 - `#` treats a non-breaking space as a gap, so `台北\u00a0#中文` and `中文#\u00a0abc` stay as written. `/#tag` in a slash list stays tight. `C#` is unchanged.
 
+### Name suffixes and Windows paths
+
+- Product names and tiers followed by `+` keep their sign attached at a CJK boundary: `Apple TV+`, `CATCHPLAY+`, `Discovery+`, `Disney+`, `ESPN+`, `Fitness+`, `iCloud+`, `mo 店+`, `Paramount+`, `PS+`, and `Pro+`. Product names written in CJK (`公視+`, `影劇館+`) are covered too. A closing punctuation mark stays tight (`公視+，`), while a word or an opening bracket takes the boundary space (`公視+ 上架`, `公視+ (免費平台)`).
+- Credit ratings (`AA+`, `AA-`, `twAA+`, `BBB+`, `BBB-`) and blood types (`AB+`, `AB-`, `RhD+`, `Rh+`, `Rh-`) keep their sign attached at a CJK boundary.
+- These guards are evaluated against suffix end offsets in code instead of a variable-width lookbehind, so every pattern stays in the Java 8, Android ICU, JS, and Kotlin/Native subset.
+- Windows drive paths are spaced as one unit from CJK: `檔案在C:\Users\name\` becomes `檔案在 C:\Users\name\`.
+
 ### Not in this release
 
-Product-name and rating suffix lists (`Disney+`, `公視+`, `AB+`), DOM traversal, and the CLI are unchanged from 0.2.0: they are still absent.
+DOM traversal, the CLI, and the file APIs are unchanged from 0.2.0: they are still absent. The compound-word placeholder is not ported: with the suffix guards evaluated on suffix end offsets, it has no behavior of its own.
