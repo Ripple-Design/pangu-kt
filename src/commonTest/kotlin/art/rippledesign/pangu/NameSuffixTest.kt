@@ -1,6 +1,6 @@
 @file:Suppress("TestFunctionName", "NonAsciiCharacters")
 
-package dev.darkokoa.pangu
+package art.rippledesign.pangu
 
 import kotlin.test.Test
 

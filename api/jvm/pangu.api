@@ -1,10 +1,10 @@
-public final class dev/darkokoa/pangu/Pangu {
-	public static final field INSTANCE Ldev/darkokoa/pangu/Pangu;
+public final class art/rippledesign/pangu/Pangu {
+	public static final field INSTANCE Lart/rippledesign/pangu/Pangu;
 	public final fun hasProperSpacing (Ljava/lang/String;)Z
 	public final fun spacingText (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class dev/darkokoa/pangu/PanguKt {
+public final class art/rippledesign/pangu/PanguKt {
 	public static final fun hasProperSpacing (Ljava/lang/String;)Z
 	public static final fun spacingText (Ljava/lang/String;)Ljava/lang/String;
 }

@@ -1,4 +1,4 @@
-package dev.darkokoa.pangu;
+package art.rippledesign.pangu;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package dev.darkokoa.pangu
+package art.rippledesign.pangu
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

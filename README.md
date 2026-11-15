@@ -1,6 +1,6 @@
 # pangu.kt
 
-[![badge-version]](https://search.maven.org/search?q=g:io.github.darkokoa%20a:pangu*)
+[![badge-version]](https://search.maven.org/search?q=g:art.rippledesign%20a:pangu*)
 ![badge-jvm][badge-jvm]
 ![badge-android][badge-android]
 ![badge-js][badge-js]
@@ -14,7 +14,7 @@
 
 Kotlin Multiplatform implementation of [pangu.js](https://github.com/vinta/pangu.js).
 
-This repository is the [Ripple-Design](https://github.com/Ripple-Design) fork of [pangu.kt](https://github.com/darkokoa/pangu.kt). The project is still pangu.kt; only the repository name uses a hyphen to follow the organization's naming rules. This fork adds the product-name, credit-rating, and blood-type suffix rules and the Windows drive path rule of pangu.js 10.4.1. Package names and Maven coordinates are unchanged from upstream, so the published artifact still resolves under upstream's coordinates; build this fork from source to use the added rules.
+This repository is the [Ripple-Design](https://github.com/Ripple-Design) fork of [pangu.kt](https://github.com/darkokoa/pangu.kt). The project is still pangu.kt; only the repository name uses a hyphen to follow the organization's naming rules. This fork adds the product-name, credit-rating, and blood-type suffix rules and the Windows drive path rule of pangu.js 10.4.1. It publishes as `art.rippledesign:pangu` with the `art.rippledesign.pangu` package; the package and coordinates differ from upstream, so update both when switching.
 
 `pangu.kt` inserts spacing between CJK characters and Latin letters, numbers, or symbols.
 
@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("io.github.darkokoa:pangu:<version>")
+                implementation("art.rippledesign:pangu:<version>")
             }
         }
     }
@@ -38,7 +38,7 @@ For JVM-only projects:
 
 ```kotlin
 dependencies {
-    implementation("io.github.darkokoa:pangu-jvm:<version>")
+    implementation("art.rippledesign:pangu-jvm:<version>")
 }
 ```
 
@@ -46,7 +46,7 @@ For Android-only projects:
 
 ```kotlin
 dependencies {
-    implementation("io.github.darkokoa:pangu-android:<version>")
+    implementation("art.rippledesign:pangu-android:<version>")
 }
 ```
 
@@ -57,8 +57,8 @@ Android KMP consumers can also depend on the root artifact from common source se
 Kotlin:
 
 ```kotlin
-import dev.darkokoa.pangu.Pangu
-import dev.darkokoa.pangu.spacingText
+import art.rippledesign.pangu.Pangu
+import art.rippledesign.pangu.spacingText
 
 val pendingText = "中文abc"
 val completedText = Pangu.spacingText(pendingText)
@@ -71,8 +71,8 @@ val alreadySpaced = completedText.hasProperSpacing()
 Java:
 
 ```java
-import dev.darkokoa.pangu.Pangu;
-import dev.darkokoa.pangu.PanguKt;
+import art.rippledesign.pangu.Pangu;
+import art.rippledesign.pangu.PanguKt;
 
 String pendingText = "中文abc";
 String completedText = Pangu.INSTANCE.spacingText(pendingText);
@@ -127,7 +127,7 @@ Java support requires Java 8 bytecode compatibility or newer.
 
 Released under the [MIT License](LICENSE).
 
-[badge-version]: https://img.shields.io/maven-central/v/io.github.darkokoa/pangu?style=flat
+[badge-version]: https://img.shields.io/maven-central/v/art.rippledesign/pangu?style=flat
 [badge-ios]: https://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat
 [badge-js]: https://img.shields.io/badge/platform-js-F8DB5D.svg?style=flat
 [badge-jvm]: https://img.shields.io/badge/platform-jvm-DB413D.svg?style=flat

@@ -24,7 +24,7 @@ kotlin {
     }
 
     android {
-        namespace = "dev.darkokoa.pangu"
+        namespace = "art.rippledesign.pangu"
         compileSdk = 36
         minSdk = 24
 

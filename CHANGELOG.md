@@ -4,6 +4,10 @@
 
 Breaking plain-text spacing changes since 0.2.0. `spacingText` now follows pangu.js 10.4.1 for the rules below. Bump callers that depended on 0.2.0 output before upgrading.
 
+### Coordinates and package
+
+- Published as `art.rippledesign:pangu`; the Kotlin package is `art.rippledesign.pangu`. Both differ from upstream `io.github.darkokoa:pangu` and `dev.darkokoa.pangu`, so update dependency coordinates and imports together.
+
 ### Half-width punctuation, URLs, and slashes
 
 - `~ ! ; : , . ?` are no longer converted to full-width. A trailing space is inserted only when CJK, a letter, or a digit follows. `前面!後面` becomes `前面! 後面`, and a trailing `前面?` stays `前面?`.

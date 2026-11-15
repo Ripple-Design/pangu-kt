@@ -1,4 +1,4 @@
-package dev.darkokoa.pangu
+package art.rippledesign.pangu
 
 import java.io.File
 import kotlin.test.Test
@@ -105,7 +105,7 @@ class RegexPortabilityGuardTest {
         var dir: File? = File(System.getProperty("user.dir"))
         repeat(6) {
             val current = dir ?: return@repeat
-            val candidate = File(current, "src/commonMain/kotlin/dev/darkokoa/pangu/Pangu.kt")
+            val candidate = File(current, "src/commonMain/kotlin/art/rippledesign/pangu/Pangu.kt")
             if (candidate.isFile) return candidate.readText()
             dir = current.parentFile
         }

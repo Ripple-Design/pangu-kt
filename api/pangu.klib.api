@@ -5,11 +5,11 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <io.github.darkokoa:pangu>
-final object dev.darkokoa.pangu/Pangu { // dev.darkokoa.pangu/Pangu|null[0]
-    final fun hasProperSpacing(kotlin/String): kotlin/Boolean // dev.darkokoa.pangu/Pangu.hasProperSpacing|hasProperSpacing(kotlin.String){}[0]
-    final fun spacingText(kotlin/String): kotlin/String // dev.darkokoa.pangu/Pangu.spacingText|spacingText(kotlin.String){}[0]
+// Library unique name: <art.rippledesign:pangu>
+final object art.rippledesign.pangu/Pangu { // art.rippledesign.pangu/Pangu|null[0]
+    final fun hasProperSpacing(kotlin/String): kotlin/Boolean // art.rippledesign.pangu/Pangu.hasProperSpacing|hasProperSpacing(kotlin.String){}[0]
+    final fun spacingText(kotlin/String): kotlin/String // art.rippledesign.pangu/Pangu.spacingText|spacingText(kotlin.String){}[0]
 }
 
-final fun (kotlin/String).dev.darkokoa.pangu/hasProperSpacing(): kotlin/Boolean // dev.darkokoa.pangu/hasProperSpacing|hasProperSpacing@kotlin.String(){}[0]
-final fun (kotlin/String).dev.darkokoa.pangu/spacingText(): kotlin/String // dev.darkokoa.pangu/spacingText|spacingText@kotlin.String(){}[0]
+final fun (kotlin/String).art.rippledesign.pangu/hasProperSpacing(): kotlin/Boolean // art.rippledesign.pangu/hasProperSpacing|hasProperSpacing@kotlin.String(){}[0]
+final fun (kotlin/String).art.rippledesign.pangu/spacingText(): kotlin/String // art.rippledesign.pangu/spacingText|spacingText@kotlin.String(){}[0]
